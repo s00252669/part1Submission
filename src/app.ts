@@ -1,5 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
+import swaggerUi from 'swagger-ui-express';
 import { logger } from './middleware/logger.middleware';
+import {swaggerSpec} from './config/swagger';
+import componentRoutes from './routes/component.routes';
+import buildRoutes from './routes/build.routes';
 
 export const app = express();
 
@@ -9,6 +13,14 @@ app.use(logger);
 app.get('/ping', (req: Request, res: Response) => {
   res.status(200).json({ message: 'hello from Ben' });
 });
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/openapi.json', (req: Request, res: Response) => {
+  res.json(swaggerSpec);
+});
+
+app.use('/api/v1/components', componentRoutes); 
+app.use('/api/v1/builds', buildRoutes);
 
 // Unknown route
 app.use((req: Request, res: Response) => {
