@@ -8,7 +8,7 @@ const router = express.Router();
 const buildController = new BuildController();
 
 router.get('/', buildController.getBuilds);
-router.get('/id', buildController.getBuildById);
+router.get('/:id', buildController.getBuildById);
 router.get('/:id/compatibility', buildController.getCompatibility);
 router.post('/', authenticateKey, validate(createBuildZSchema), buildController.createBuild);
 router.put('/:id', authenticateKey, validate(updateBuildZSchema), buildController.updateBuild);
