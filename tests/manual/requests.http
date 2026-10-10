@@ -1,0 +1,280 @@
+@baseUrl = http://localhost:3000/api/v1
+@apiKey = pcbuilder-secret-key
+
+########################################
+# SEED DATA (POST with correct data → 201)
+########################################
+
+# @name cpuAmd
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Ryzen 5 9600X", "type": "CPU", "brand": "AMD", "price": 229, "wattage": 65, "socket": "AM5" }
+
+###
+# @name cpuIntel
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Core i5-14600K", "type": "CPU", "brand": "Intel", "price": 289, "wattage": 125, "socket": "LGA1700" }
+
+###
+# @name moboAm5
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "MSI B650 Gaming Plus WiFi", "type": "Motherboard", "brand": "MSI", "price": 189, "wattage": 50, "socket": "AM5", "memoryType": "DDR5" }
+
+###
+# @name moboIntel
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "ASUS Prime B760M-A D4", "type": "Motherboard", "brand": "ASUS", "price": 129, "wattage": 45, "socket": "LGA1700", "memoryType": "DDR4" }
+
+###
+# @name ramDdr5
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Corsair Vengeance 32GB DDR5-6000", "type": "RAM", "brand": "Corsair", "price": 120, "wattage": 10, "memoryType": "DDR5" }
+
+###
+# @name ramDdr4
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Kingston Fury Beast 16GB DDR4-3200", "type": "RAM", "brand": "Kingston", "price": 45, "wattage": 8, "memoryType": "DDR4" }
+
+###
+# @name gpuMid
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Asus Dual RTX 5060 Ti 16GB", "type": "GPU", "brand": "Asus", "price": 449, "wattage": 180 }
+
+###
+# @name gpuAmd
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Sapphire Pulse RX 9070 XT", "type": "GPU", "brand": "Sapphire", "price": 699, "wattage": 304 }
+
+###
+# @name gpuHigh
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "MSI RTX 5090 Suprim", "type": "GPU", "brand": "MSI", "price": 2999, "wattage": 575 }
+
+###
+# @name psu750
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Corsair RM750e", "type": "PSU", "brand": "Corsair", "price": 99, "wattage": 750 }
+
+###
+# @name psu550
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "be quiet! System Power 10 550W", "type": "PSU", "brand": "be quiet!", "price": 59, "wattage": 550 }
+
+###
+# @name ssd
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Kingston NV3 1TB", "type": "Storage", "brand": "Kingston", "price": 69, "wattage": 6 }
+
+###
+# @name goodBuild
+POST {{baseUrl}}/builds HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "name": "1440p Gaming Build",
+  "description": "Balanced AM5 build",
+  "budget": 1400,
+  "components": [
+    "{{cpuAmd.response.body.$._id}}", "{{moboAm5.response.body.$._id}}", "{{ramDdr5.response.body.$._id}}",
+    "{{gpuMid.response.body.$._id}}", "{{psu750.response.body.$._id}}", "{{ssd.response.body.$._id}}"
+  ]
+}
+
+###
+# @name badBuild
+POST {{baseUrl}}/builds HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "name": "Broken Build",
+  "description": "Intel CPU on AM5 board, DDR4 RAM, tiny PSU, 5090",
+  "budget": 1000,
+  "components": [
+    "{{cpuIntel.response.body.$._id}}", "{{moboAm5.response.body.$._id}}", "{{ramDdr4.response.body.$._id}}",
+    "{{gpuHigh.response.body.$._id}}", "{{psu550.response.body.$._id}}"
+  ]
+}
+
+########################################
+# POST that fails validation → 400 / 401
+########################################
+
+### Negative price → 400
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Bad GPU", "type": "GPU", "brand": "X", "price": -10, "wattage": 200 }
+
+### CPU with no socket → 400 (refine rule)
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Mystery CPU", "type": "CPU", "brand": "Intel", "price": 300, "wattage": 125 }
+
+### Unknown type → 400
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Toaster", "type": "Toaster", "brand": "X", "price": 10, "wattage": 10 }
+
+### Build with a fake component id → 400
+POST {{baseUrl}}/builds HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Fake Build", "budget": 500, "components": ["6700000000000000000000aa"] }
+
+### No API key → 401
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+
+{ "name": "Test", "type": "GPU", "brand": "X", "price": 10, "wattage": 10 }
+
+########################################
+# GET collection (+ filter, sort, projection, paging)
+########################################
+
+### All components → 200
+GET {{baseUrl}}/components HTTP/1.1
+
+### Only GPUs under €700, most expensive first
+GET {{baseUrl}}/components?type=GPU&maxPrice=700&sort=-price HTTP/1.1
+
+### Projection: only name and price
+GET {{baseUrl}}/components?fields=name,price HTTP/1.1
+
+### Paging: page 2, 5 per page
+GET {{baseUrl}}/components?page=2&limit=5 HTTP/1.1
+
+### Search by name
+GET {{baseUrl}}/components?search=ryzen HTTP/1.1
+
+### Invalid sort → 400
+GET {{baseUrl}}/components?sort=banana HTTP/1.1
+
+### All builds → 200
+GET {{baseUrl}}/builds HTTP/1.1
+
+### Builds under €1200, cheapest first
+GET {{baseUrl}}/builds?maxBudget=1200&sort=budget HTTP/1.1
+
+########################################
+# GET individual
+########################################
+
+### Component by id → 200
+GET {{baseUrl}}/components/{{cpuAmd.response.body.$._id}} HTTP/1.1
+
+### Malformed id → 400
+GET {{baseUrl}}/components/abc HTTP/1.1
+
+### Unknown id → 404
+GET {{baseUrl}}/components/6700000000000000000000aa HTTP/1.1
+
+### Build by id (components populated) → 200
+GET {{baseUrl}}/builds/{{goodBuild.response.body.$._id}} HTTP/1.1
+
+### Compatibility: good build → compatible: true
+GET {{baseUrl}}/builds/{{goodBuild.response.body.$._id}}/compatibility HTTP/1.1
+
+### Compatibility: bad build → compatible: false + issues
+GET {{baseUrl}}/builds/{{badBuild.response.body.$._id}}/compatibility HTTP/1.1
+
+########################################
+# PUT
+########################################
+
+### Update price → 200
+PUT {{baseUrl}}/components/{{gpuMid.response.body.$._id}} HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "price": 429 }
+
+### Unknown id → 404
+PUT {{baseUrl}}/components/6700000000000000000000aa HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "price": 429 }
+
+### Invalid data → 400
+PUT {{baseUrl}}/components/{{gpuMid.response.body.$._id}} HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "price": "cheap" }
+
+### Update a build's budget → 200
+PUT {{baseUrl}}/builds/{{goodBuild.response.body.$._id}} HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "budget": 1500 }
+
+########################################
+# DELETE (uses a throwaway so seed data stays)
+########################################
+
+# @name throwaway
+POST {{baseUrl}}/components HTTP/1.1
+content-type: application/json
+x-api-key: {{apiKey}}
+
+{ "name": "Delete Me SSD", "type": "Storage", "brand": "Test", "price": 20, "wattage": 5 }
+
+### Delete it → 204
+DELETE {{baseUrl}}/components/{{throwaway.response.body.$._id}} HTTP/1.1
+x-api-key: {{apiKey}}
+
+### Delete again → 404
+DELETE {{baseUrl}}/components/{{throwaway.response.body.$._id}} HTTP/1.1
+x-api-key: {{apiKey}}
+
+### Delete a part used in a build → 409
+DELETE {{baseUrl}}/components/{{cpuAmd.response.body.$._id}} HTTP/1.1
+x-api-key: {{apiKey}}
+
+### Delete malformed id → 400
+DELETE {{baseUrl}}/components/abc HTTP/1.1
+x-api-key: {{apiKey}}
