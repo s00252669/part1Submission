@@ -10,5 +10,5 @@
     "noUnusedLocals": true,
     "types": ["vitest/globals", "node"]
   },
-  "include": ["src/**/*", "tests/**/*"]
+  "include": ["src/**/*", "tests/**/*", "tests", "vite.config.ts"]
 }
