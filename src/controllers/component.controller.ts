@@ -57,7 +57,7 @@ export class ComponentController {
    */
   getComponentById = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       if (!isValidObjectId(id)) {
         res.status(400).json({ message: 'Invalid component id' });
         return;
@@ -121,7 +121,7 @@ export class ComponentController {
    */
   updateComponent = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       if (!isValidObjectId(id)) {
         res.status(400).json({ message: 'Invalid component id' });
         return;
@@ -155,7 +155,7 @@ export class ComponentController {
    */
   deleteComponent = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       if (!isValidObjectId(id)) {
         res.status(400).json({ message: 'Invalid component id' });
         return;

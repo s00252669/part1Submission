@@ -2,7 +2,7 @@ import express from "express";
 import { ComponentController } from "../controllers/component.controller"; 
 import { authenticateKey} from "../middleware/auth.middleware";
 import {validate} from '../middleware/validate.middleware';
-import {createComponentZSchema, updateComponentZSchema, componentQueryZSchema} from '../models/component.model';
+import { createComponentZSchema, updateComponentZSchema } from '../models/component.model';
 
 const router = express.Router();
 const componentController = new ComponentController();
