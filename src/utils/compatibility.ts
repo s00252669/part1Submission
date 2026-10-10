@@ -1,5 +1,4 @@
 import { IComponent } from '../models/component.model';
-
 export interface CompatibilityReport {
   compatible: boolean;
   totalPrice: number;
