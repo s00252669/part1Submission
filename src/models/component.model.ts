@@ -17,12 +17,12 @@ export interface IComponent {
 const componentSchema = new Schema<IComponent>(
   {
     name:       { type: String, required: true, trim: true },
-    type:       { type: String, required: true, enum: COMPONENT_TYPES },
+    type:       { type: String, required: true, enum: [...COMPONENT_TYPES] },
     brand:      { type: String, required: true, trim: true },
     price:      { type: Number, required: true, min: 0 },
     wattage:    { type: Number, required: true, min: 0 },
     socket:     { type: String },
-    memoryType: { type: String, enum: MEMORY_TYPES },
+    memoryType: { type: String, enum: [...MEMORY_TYPES] },
   },
   { timestamps: true }
 );
