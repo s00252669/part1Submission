@@ -40,7 +40,7 @@ export const componentBaseZSchema = z.object({
   memoryType: z.enum(MEMORY_TYPES).optional(),
 });
 
-// Business rules: CPUs/motherboards need a socket, RAM/motherboards need a memory type
+// Business rules: 
 export const createComponentZSchema = componentBaseZSchema
   .refine((c) => !['CPU', 'Motherboard'].includes(c.type) || !!c.socket, {
     message: 'CPUs and motherboards must have a socket',
@@ -53,7 +53,7 @@ export const createComponentZSchema = componentBaseZSchema
 
 export const updateComponentZSchema = componentBaseZSchema.partial();
 
-// Query parameters: z.coerce turns "500" from the URL into the number 500
+
 export const componentQueryZSchema = z.object({
   type:     z.enum(COMPONENT_TYPES).optional(),
   brand:    z.string().optional(),

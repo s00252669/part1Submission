@@ -4,9 +4,10 @@ import { logger } from './middleware/logger.middleware';
 import {swaggerSpec} from './config/swagger';
 import componentRoutes from './routes/component.routes';
 import buildRoutes from './routes/build.routes';
+import cors from 'cors';
 
 export const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use(logger);
 
